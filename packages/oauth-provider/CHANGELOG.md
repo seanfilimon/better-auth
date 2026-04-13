@@ -1,5 +1,41 @@
 # @better-auth/oauth-provider
 
+## 1.6.3
+
+### Patch Changes
+
+- [#9123](https://github.com/better-auth/better-auth/pull/9123) [`e2e25a4`](https://github.com/better-auth/better-auth/commit/e2e25a49545f3e386cfcc4e86b33c1796a1430b1) Thanks [@gustavovalverde](https://github.com/gustavovalverde)! - fix(oauth-provider): override confidential auth methods to public in unauthenticated DCR
+
+  When `allowUnauthenticatedClientRegistration` is enabled, unauthenticated DCR
+  requests that specify `client_secret_post`, `client_secret_basic`, or omit
+  `token_endpoint_auth_method` (which defaults to `client_secret_basic` per
+  [RFC 7591 §2](https://datatracker.ietf.org/doc/html/rfc7591#section-2)) are
+  now silently overridden to `token_endpoint_auth_method: "none"` (public client)
+  instead of being rejected with HTTP 401.
+
+  This follows [RFC 7591 §3.2.1](https://datatracker.ietf.org/doc/html/rfc7591#section-3.2.1),
+  which allows the server to "reject or replace any of the client's requested
+  metadata values submitted during the registration and substitute them with
+  suitable values." The registration response communicates the actual method
+  back to the client, allowing compliant clients to adjust.
+
+  This fixes interoperability with real-world MCP clients (Claude, Codex, Factory
+  Droid, and others) that send `token_endpoint_auth_method: "client_secret_post"`
+  in their DCR payload because the server metadata advertises it in
+  `token_endpoint_auth_methods_supported`.
+
+  Closes [#8588](https://github.com/better-auth/better-auth/issues/8588)
+
+- [#9118](https://github.com/better-auth/better-auth/pull/9118) [`314e06f`](https://github.com/better-auth/better-auth/commit/314e06f0fd84ac90b55b5430624a74c5a8d62bfd) Thanks [@gustavovalverde](https://github.com/gustavovalverde)! - feat(oauth-provider): add `customTokenResponseFields` callback and Zod validation for authorization codes
+
+  Add `customTokenResponseFields` callback to `OAuthOptions` for injecting custom fields into token endpoint responses across all grant types. Standard OAuth fields (`access_token`, `token_type`, etc.) cannot be overridden. Follows the same pattern as `customAccessTokenClaims` and `customIdTokenClaims`.
+
+  Authorization code verification values are now validated with a Zod schema at deserialization, consistently returning `invalid_verification` errors for malformed or corrupted values instead of potential 500s.
+
+- Updated dependencies [[`484ce6a`](https://github.com/better-auth/better-auth/commit/484ce6a262c39b9c1be91d37774a2a13de3a5a1f), [`f875897`](https://github.com/better-auth/better-auth/commit/f8758975ae475429d56b34aa6067e304ee973c8f), [`6ce30cf`](https://github.com/better-auth/better-auth/commit/6ce30cf13853619b9022e93bd6ecb956bc32482d), [`f6428d0`](https://github.com/better-auth/better-auth/commit/f6428d02fcabc2e628f39b0e402f1a6eb0602649), [`c5066fe`](https://github.com/better-auth/better-auth/commit/c5066fe5d68babf2376cfc63d813de5542eca463), [`5f84335`](https://github.com/better-auth/better-auth/commit/5f84335815d75410320bdfa665a6712d3416b04f)]:
+  - better-auth@1.6.3
+  - @better-auth/core@1.6.3
+
 ## 1.6.2
 
 ### Patch Changes
