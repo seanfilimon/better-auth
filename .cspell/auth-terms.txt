@@ -33,3 +33,13 @@ Vercel
 rgba
 idtoken
 HIBP
+abac
+ABAC
+AKIA
+AKIATEST
+sourceip
+orgid
+creds
+alphanum
+hxllo
+heello
